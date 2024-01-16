@@ -1,5 +1,5 @@
 """
-This file contains the code for a radar creator app, deployed by Streamlit.
+This file contains the main code for a radar creator app, deployed onto Streamlit.
 """
 
 # -------------------------------------------------------------------------------------------------
@@ -17,6 +17,9 @@ import matplotlib.pyplot as plt  # Draw plots
 import matplotlib as mpl
 
 mpl.rcParams["figure.dpi"] = 700
+
+# Import components
+from components import inputForm, paramList
 
 
 # Set up radar mosaic
@@ -63,77 +66,8 @@ try:
 except AttributeError:
     st.session_state.radar_params = []
 
+# Initialise and display the input form
+inputForm.inputForm()
 
-# Function to call to append a new parameter to the session state array
-def paramAppend(param_name, param_score):
-    # Ignore cases where param_name is empty
-    if param_name != "":
-        # Create a dict to store each parameter
-        param = {"Name": param_name, "Score": param_score}
-
-        # Append the new parameter to the session state array
-        st.session_state.radar_params.append(param)
-
-
-# Display a form to input parameters
-with st.form(key="params_input", clear_on_submit=True):
-    # Set up columns
-    col1, col2 = st.columns([3.25, 0.75])
-
-    # Set up text input field for column 1
-    param_name = col1.text_input(label="Parameter name", key="param_name")
-
-    # Set up number input field for column 2
-    param_score = col2.number_input(
-        label="Score", min_value=0, max_value=5, key="param_score"
-    )
-
-    # Set up a button to add names and scores to dict
-    submit_button = st.form_submit_button(
-        label="Add to radar",
-        type="primary",
-        on_click=paramAppend(param_name, param_score),
-    )
-
-    # Clear param_name and param_score in the session state
-    del st.session_state.param_name
-    del st.session_state.param_score
-
-# Header for list of params
-st.header("List of parameters")
-
-# Initialise blank DataFrame for editable table
-df = pd.DataFrame()
-
-# Key for the editable table
-try:
-    st.session_state.dataEditor_key
-    st.session_state.dataEditor_reset
-except AttributeError:
-    st.session_state.dataEditor_key = 0
-    st.session_state.dataEditor_reset = False
-
-# Convert dict to a DataFrame
-if st.session_state.dataEditor_reset != True:
-    st.session_state.persistent_df = pd.DataFrame(st.session_state.radar_params)
-    df = st.session_state.persistent_df
-
-# Display list of params as an editable table
-edited_df = st.data_editor(
-    df,
-    column_config={
-        "Score": st.column_config.NumberColumn(min_value=0, max_value=5, step=1)
-    },
-    hide_index=True,
-    key=f"editor_{st.session_state.dataEditor_key}",
-)
-
-
-# Function to reset editable table
-def dataEditor_reset():
-    st.session_state.dataEditor_key += 1
-    st.session_state.dataEditor_reset = True
-
-
-# Button to clear the editable table
-st.button(label="Clear list", type="primary", on_click=dataEditor_reset)
+# Initialise and display the param list
+paramList.paramList()
