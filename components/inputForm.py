@@ -14,7 +14,8 @@ def paramAppend(param_name, param_score):
         param = {"Name": param_name, "Score": param_score}
 
         # Append the new parameter to the session state array
-        st.session_state.radar_params.append(param)
+        if param not in st.session_state.radar_params:
+            st.session_state.radar_params.append(param)
 
 
 # Main function to initiate the input form on the application
@@ -25,12 +26,16 @@ def inputForm():
         col1, col2 = st.columns([3.25, 0.75])
 
         # Set up text input field for column 1
-        param_name = col1.text_input(label="Parameter name", key="param_name")
+        st.session_state.param_name = col1.text_input(
+            label="Parameter name", value=None
+        )
+        param_name = st.session_state.param_name
 
         # Set up number input field for column 2
-        param_score = col2.number_input(
-            label="Score", min_value=0, max_value=5, key="param_score"
+        st.session_state.param_score = col2.number_input(
+            label="Score", min_value=0, max_value=5, value=None
         )
+        param_score = st.session_state.param_score
 
         # Set up a button to add names and scores to dict
         submit_button = st.form_submit_button(
@@ -40,5 +45,7 @@ def inputForm():
         )
 
         # Clear param_name and param_score in the session state
-        del st.session_state.param_name
-        del st.session_state.param_score
+        st.session_state_param_name = ""
+        st.session_state_param_score = 0
+        param_name = ""
+        param_score = 0

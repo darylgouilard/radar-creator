@@ -5,16 +5,9 @@ This file contains the code for the parameters list component of the radar creat
 # Necessary imports
 import streamlit as st
 import pandas as pd
+from components import clearListButton
 
-# Keys for the editable table
-st.session_state.dataEditor_key = 0
-st.session_state.dataEditor_reset = False
-
-
-# Function to reset editable table
-def dataEditor_reset():
-    st.session_state.dataEditor_key += 1
-    st.session_state.dataEditor_reset = True
+# -------------------------------------------------------------------------------------------------
 
 
 # Main function to initialise the parameters list
@@ -44,5 +37,5 @@ def paramList():
         key=f"editor_{st.session_state.dataEditor_key}",
     )
 
-    # Button to clear the editable table
-    st.button(label="Clear list", type="primary", on_click=dataEditor_reset)
+    # Initialise a button to clear the params list
+    clearListButton.clearListButton()
